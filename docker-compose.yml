@@ -1,0 +1,42 @@
+services:
+  app:
+    image: openjdk:17
+    volumes:
+      - ./target/dadangsinhhoc-0.0.1-SNAPSHOT.jar:/app/api-service.jar
+    command: ["java", "-jar", "/app/api-service.jar"]
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=dongthucvat
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=admin123
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mysql_network
+
+  db:
+    image: mysql:8.0.38
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: dongthucvat
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/dongthucvat.sql:/docker-entrypoint-initdb.d/dongthucvat.sql
+    networks:
+      - mysql_network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+networks:
+  mysql_network:
+    driver: bridge
