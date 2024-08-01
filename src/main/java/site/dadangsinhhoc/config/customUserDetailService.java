@@ -5,23 +5,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import site.dadangsinhhoc.models.userModel;
-import site.dadangsinhhoc.repositories.userRepository;
+import site.dadangsinhhoc.models.AppUserDetails;
+import site.dadangsinhhoc.models.UserModel;
+import site.dadangsinhhoc.repositories.UserRepository;
 
 @Component
-public class customUserDetailService implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
 
     @Autowired
-    private userRepository userRepo;
+    private UserRepository userRepo;
+
+    @Autowired
+    public CustomUserDetailService(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        userModel user = userRepo.findByUserName(username);
+        UserModel user = userRepo.findByUserName(username);
 
         if(user == null) {
             throw new UsernameNotFoundException("User not found");
         } else {
-            return new customUser(user);
+            return new AppUserDetails(user);
         }
     }
 }

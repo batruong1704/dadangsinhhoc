@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import site.dadangsinhhoc.exception.SwaggerInitializationException;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -11,32 +12,29 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Configuration
 @EnableWebMvc
 public class SwaggerConfig implements WebMvcConfigurer {
 
+    private static final Logger logger = LoggerFactory.getLogger(SwaggerConfig.class);
     @Bean
     public Docket api() {
         try {
             Docket docket = new Docket(DocumentationType.SWAGGER_2)
                     .select()
-                    .apis(RequestHandlerSelectors.basePackage("com.example.dadangsinhhoc"))
+                    .apis(RequestHandlerSelectors.basePackage("site.dadangsinhhoc"))
                     .paths(PathSelectors.regex("/.*"))
-                    .build().apiInfo(apiInfo());;
-
-            System.out.println("\n\nSwagger UI in: http://localhost:8080/swagger-ui/index.html#/");
-            System.out.println("Login with Admin:");
-            System.out.println("\tUsername and passwork: admin");
-            System.out.println("Login with User:");
-            System.out.println("\tUsername and passwork: user");
-            System.out.println("\nPhpmyadmin in: http://localhost/phpmyadmin/index.php?route=/database/structure&db=dongthucvat   ");
-            System.out.println("\tUsername: root");
-            System.out.println("\tPasswork: admin123");
+                    .build().apiInfo(apiInfo());
+            logger.info("Start project with: http://localhost:8080/login");
+            logger.info("Swagger UI in: http://localhost:8080/swagger-ui/index.html#/");
+//            logger.info("Phpmyadmin in: http://localhost/phpmyadmin/index.php?route=/database/structure&db=dongthucvat   ");
 
             return docket;
         } catch (Exception e) {
-            System.err.println("Failt when init Swagger: " + e.getMessage());
-            throw e;
+            throw new SwaggerInitializationException("Failed to initialize Swagger documentation", e);
         }
     }
 

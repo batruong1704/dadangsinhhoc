@@ -1,16 +1,16 @@
-package site.dadangsinhhoc.config;
+package site.dadangsinhhoc.models;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import site.dadangsinhhoc.models.userModel;
+
 import java.util.Collection;
 import java.util.List;
 
-public class customUser implements UserDetails {
-    private userModel user;
+public class AppUserDetails implements UserDetails {
+    private final UserModel user;
 
-    public customUser(userModel user) {
+    public AppUserDetails(UserModel user) {
         super();
         this.user = user;
     }
@@ -31,12 +31,7 @@ public class customUser implements UserDetails {
         return user.getUserName();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
+/*    @Override
     public boolean isAccountNonLocked() {
         return true;
     }
@@ -50,4 +45,11 @@ public class customUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+ */
 }
